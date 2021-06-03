@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Video Downloading</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+  <h2>Your video is being downloaded</h2>
+  <form action="/download" method="post">
+    <div class="form-group">
+      <label for="url">Url of the video:</label>
+      <input type="url" class="form-control" id="url" required placeholder="Enter URL" name="video_url">
+    </div>
+
+    <div class="form-group form-check">
+      <label class="form-check-label">
+        <input class="form-check-input" type="checkbox" name="audio">Audio only
+      </label>
+    </div>
+
+
+      <p>
+        Thumbnail of the video :
+      </p>
+        <img src="" style="display: none" id="thumbnail" class="img-fluid" alt="thumbnail_of_the_video"/>
+
+
+      <p id="title">
+          Title of the video :
+      </p>
+
+
+    <button class="btn btn-primary" type="button" style="margin-bottom: 20px" onclick="details()">Get details to ensure</button>
+    <button type="submit" class="btn btn-primary" style="margin-bottom: 20px">Download</button>
+  </form>
+
+  <a  style="display: none" id="auto_down" class="btn btn-primary" href="{{ src }}" download="{{ src }}">Downloading</a>
+</div>
+
+</body>
+
+<script>
+    function details() {
+        const url = document.getElementById("url").value
+        if (url !== ""){
+            const payload = {'url': url}
+            try {
+
+
+                $.post("/details", payload, function (data, status) {
+                    if (data !== "Video Not Available") {
+                        console.log(data)
+                        console.log(status)
+                        document.getElementById("thumbnail").setAttribute("src", data['thumbnail'])
+                        document.getElementById("thumbnail").style.display = "block"
+                        document.getElementById("title").innerText = data['title']
+
+                    } else {
+                        alert("Video Not Available")
+                        document.getElementById("url").value = ""
+                    }
+
+                });
+
+            }
+
+            catch (e) {
+                alert("Video Not Available")
+
+            }
+
+        }
+
+    }
+
+    document.getElementById("auto_down").click()
+
+</script>
+</html>
